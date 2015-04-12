@@ -81,8 +81,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         let kbdLimit = myBoundSize.height - keyboardScreenEndFrame.size.height
         
         
-        println("テキストフィールドの下辺：(txtLimit)")
-        println("キーボードの上辺：(kbdLimit)")
+        println("テキストフィールドの下辺：(\(txtLimit))")
+        println("キーボードの上辺：(\(kbdLimit))")
         
         if txtLimit >= kbdLimit {
             sc.contentOffset.y = txtLimit - kbdLimit
