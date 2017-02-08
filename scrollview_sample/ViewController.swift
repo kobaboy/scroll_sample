@@ -9,8 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController, UITextFieldDelegate, UIScrollViewDelegate{
-    let text1: UITextField = UITextField(frame: CGRectMake(0,0,200,30))
-    let text2: UITextField = UITextField(frame: CGRectMake(0,0,200,30))
+    let text1: UITextField = UITextField(frame: CGRect(x: 0,y: 0,width: 200,height: 30))
+    let text2: UITextField = UITextField(frame: CGRect(x: 0,y: 0,width: 200,height: 30))
     let sc = UIScrollView();
     var txtActiveField = UITextField()
     
@@ -19,7 +19,7 @@ class ViewController: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         // Do any additional setup after loading the view, typically from a nib.
         
         sc.frame = self.view.frame;
-        sc.backgroundColor = UIColor.redColor();
+        sc.backgroundColor = UIColor.red;
         sc.delegate = self;
         
         //textfileの位置を指定する
@@ -35,8 +35,8 @@ class ViewController: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         text2.delegate = self
         
         // 枠を表示する.
-        text1.borderStyle = UITextBorderStyle.RoundedRect
-        text2.borderStyle = UITextBorderStyle.RoundedRect
+        text1.borderStyle = UITextBorderStyle.roundedRect
+        text2.borderStyle = UITextBorderStyle.roundedRect
         
         // UITextFieldの表示する位置を設定する.
         text1.layer.position = CGPoint(x:self.view.bounds.width/2,y:500);
@@ -52,44 +52,43 @@ class ViewController: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
     }
     
     //改行ボタンが押された際に呼ばれる.
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         
         return true
     }
     
     //UITextFieldが編集された直後に呼ばれる.
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         txtActiveField = textField
         return true
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        let notificationCenter = NSNotificationCenter.defaultCenter()
-        notificationCenter.addObserver(self, selector: "handleKeyboardWillShowNotification:", name: UIKeyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: "handleKeyboardWillHideNotification:", name: UIKeyboardWillHideNotification, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(ViewController.handleKeyboardWillShowNotification(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(ViewController.handleKeyboardWillHideNotification(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
     
-    func handleKeyboardWillShowNotification(notification: NSNotification) {
+    func handleKeyboardWillShowNotification(_ notification: Notification) {
         
         let userInfo = notification.userInfo!
-        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        let myBoundSize: CGSize = UIScreen.mainScreen().bounds.size
+        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let myBoundSize: CGSize = UIScreen.main.bounds.size
         var txtLimit = txtActiveField.frame.origin.y + txtActiveField.frame.height + 8.0
         let kbdLimit = myBoundSize.height - keyboardScreenEndFrame.size.height
         
-        
-        println("テキストフィールドの下辺：(\(txtLimit))")
-        println("キーボードの上辺：(\(kbdLimit))")
+        print("テキストフィールドの下辺：(\(txtLimit))")
+        print("キーボードの上辺：(\(kbdLimit))")
         
         if txtLimit >= kbdLimit {
             sc.contentOffset.y = txtLimit - kbdLimit
         }
     }
     
-    func handleKeyboardWillHideNotification(notification: NSNotification) {
+    func handleKeyboardWillHideNotification(_ notification: Notification) {
         sc.contentOffset.y = 0
     }
     
